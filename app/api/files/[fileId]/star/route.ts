@@ -5,7 +5,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { and, eq } from "drizzle-orm";
 
 
-export async function Patch(request: NextRequest, prop: {params: Promise<{fileId:string}>}) {
+export async function PATCH(request: NextRequest, prop: {params: Promise<{fileId:string}>}) {
     try {
         const { userId } = await auth()
         if (!userId) {

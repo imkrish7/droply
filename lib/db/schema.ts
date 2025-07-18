@@ -12,7 +12,7 @@ export const files = pgTable('files', {
     fileUrl: text('file_url').notNull(),
     thumbnailUrl: text('thumbnail_url'),
 
-    userId: text('user_id').notNull().unique(),
+    userId: text('user_id').notNull(),
     parent: uuid('parent_id'),
 
     isFolder: boolean('is_folder').default(false).notNull(),

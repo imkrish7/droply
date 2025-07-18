@@ -4,7 +4,9 @@ import React from 'react'
 
 const page = () => {
   return (
-    <SignupForm />
+    <div className='h-screen w-full flex justify-center items-center'>
+      <SignupForm />
+    </div>
   )
 }
 

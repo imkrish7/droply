@@ -7,9 +7,12 @@ import { z } from 'zod'
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useState } from "react"
 import { signinSchema } from "@/schemas/signinSchema"
-import { Button, Card, CardBody, CardFooter, CardHeader, Divider, Input } from "@heroui/react"
 import Link from "next/link"
-import { AlertCircle, Mail, Lock, EyeOff, Eye } from "lucide-react"
+import { AlertCircle, Eye, EyeOff} from "lucide-react"
+import { Card, CardContent, CardFooter, CardHeader } from "./ui/card"
+import { Input } from "./ui/input"
+import { Button } from "./ui/button"
+import {  FormDescription } from "./ui/form"
 
 export default function SigninForm() {
 
@@ -27,19 +30,20 @@ export default function SigninForm() {
     })
 
     const onSubmit = async (data: z.infer<typeof signinSchema>) => {
-        
-        if (isLoaded) return;
+      
+        if (!isLoaded) return;
         setIsSubmitting(true)
         setAuthError(null)
 
-        try {
-            if (signIn) {
+      try {
+          console.log(signIn)
+            if (signIn !== undefined) {
                 const result = await signIn.create({
-                    identefier: data.identifier,
+                    identifier: data.identifier,
                     password: data.password
                 })
-
-                if (result.status === "completed") {
+                console.log(result)
+                if (result.status === "complete") {
                     await setActive({ session: result.createdSessionId });
                     router.push("/dashboard")
                 } else {
@@ -64,9 +68,7 @@ export default function SigninForm() {
         </p>
       </CardHeader>
 
-      <Divider />
-
-      <CardBody className="py-6">
+      <CardContent className="py-6">
         {authError && (
           <div className="bg-danger-50 text-danger-700 p-4 rounded-lg mb-6 flex items-center gap-2">
             <AlertCircle className="h-5 w-5 flex-shrink-0" />
@@ -82,16 +84,19 @@ export default function SigninForm() {
             >
               Email
             </label>
+            <div>
+
             <Input
               id="identifier"
               type="email"
               placeholder="your.email@example.com"
-              startContent={<Mail className="h-4 w-4 text-default-500" />}
-              isInvalid={!!errors.identifier}
-              errorMessage={errors.identifier?.message}
               {...register("identifier")}
-              className="w-full"
-            />
+              className={`w-full ${!!errors.identifier ? 'border-red-300': ''}`}
+              />
+              {!!errors.identifier && <FormDescription>
+                    
+              </FormDescription>}
+              </div>
           </div>
 
           <div className="space-y-2">
@@ -103,49 +108,38 @@ export default function SigninForm() {
                 Password
               </label>
             </div>
-            <Input
-              id="password"
-              type={showPassword ? "text" : "password"}
-              placeholder="••••••••"
-              startContent={<Lock className="h-4 w-4 text-default-500" />}
-              endContent={
-                <Button
-                  isIconOnly
-                  variant="light"
-                  size="sm"
-                  onClick={() => setShowPassword(!showPassword)}
-                  type="button"
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4 text-default-500" />
-                  ) : (
-                    <Eye className="h-4 w-4 text-default-500" />
-                  )}
-                </Button>
-              }
-              isInvalid={!!errors.password}
-              errorMessage={errors.password?.message}
-              {...register("password")}
-              className="w-full"
-            />
+            <div>
+              <div className="flex items-center border rounded-sm">
+              <Input
+                id="password"
+                type={showPassword ? "text" : "password"}
+                placeholder="••••••••"
+                {...register("password")}
+                className={`w-full border-none ${!!errors.password ? 'border-red-300': ''}`}
+              />
+                { showPassword ? <Eye onClick={()=> setShowPassword(false)} className="w-4 h-4 mr-2" /> : <EyeOff onClick={()=> setShowPassword(true)} className="w-4 h-4 mr-2" />}
+              </div>
+              {!!errors.password && <FormDescription>
+                  {errors.password.message}
+              </FormDescription>}
+              </div>
           </div>
 
           <Button
             type="submit"
             color="primary"
             className="w-full"
-            isLoading={isSubmitting}
+            // disabled={isSubmitting}
+            
           >
             {isSubmitting ? "Signing in..." : "Sign In"}
           </Button>
         </form>
-      </CardBody>
-
-      <Divider />
+      </CardContent>
 
       <CardFooter className="flex justify-center py-4">
         <p className="text-sm text-default-600">
-          Don't have an account?{" "}
+          Don&apos;t have an account?{" "}
           <Link
             href="/sign-up"
             className="text-primary hover:underline font-medium"

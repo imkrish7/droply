@@ -50,6 +50,7 @@ export async function POST(request: NextRequest) {
         } else {
             // return NextResponse.json({error: "Parent folder not found"}, {status: 404})
         }
+        console.log(file)
 
         if (!file.type.startsWith("image/") && file.type != "application/pdf") {
             return NextResponse.json({error: "Only images and pdf are supported"}, {status: 405})

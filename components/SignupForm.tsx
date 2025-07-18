@@ -8,11 +8,13 @@ import { signupSchema } from "@/schemas/signupSchema"
 import { FormEvent, useState } from "react"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useRouter } from "next/navigation"
-import { Button, Card, CardBody, CardFooter, CardHeader, Divider, Input } from '@heroui/react'
 
 
 import Link from "next/link"
-import { AlertCircle, CheckCircle, Eye, EyeOff, Mail, Lock } from "lucide-react"
+import { AlertCircle, CheckCircle, Eye, EyeOff } from "lucide-react"
+import { Card, CardContent, CardFooter, CardHeader } from "./ui/card"
+import { Input } from "./ui/input"
+import { Button } from "./ui/button"
 
 
 export default function SignupForm() {
@@ -100,9 +102,9 @@ export default function SignupForm() {
           </p>
         </CardHeader>
 
-        <Divider />
+        <div className="h-4" />
 
-        <CardBody className="py-6">
+        <CardContent className="py-6">
           {verificationError && (
             <div className="bg-danger-50 text-danger-700 p-4 rounded-lg mb-6 flex items-center gap-2">
               <AlertCircle className="h-5 w-5 flex-shrink-0" />
@@ -126,14 +128,14 @@ export default function SignupForm() {
                 onChange={(e) => setVerificationCode(e.target.value)}
                 className="w-full"
                 autoFocus
-              />
+                />
+                
             </div>
 
             <Button
               type="submit"
               color="primary"
               className="w-full"
-              isLoading={isSubmitting}
             >
               {isSubmitting ? "Verifying..." : "Verify Email"}
             </Button>
@@ -156,7 +158,7 @@ export default function SignupForm() {
               </button>
             </p>
           </div>
-        </CardBody>
+        </CardContent>
       </Card>
     }
     return  <Card className="w-full max-w-md border border-default-200 bg-default-50 shadow-xl">
@@ -169,9 +171,9 @@ export default function SignupForm() {
         </p>
       </CardHeader>
 
-      <Divider />
+      <div className="h-4" />
 
-      <CardBody className="py-6">
+      <CardContent className="py-6">
         {authError && (
           <div className="bg-danger-50 text-danger-700 p-4 rounded-lg mb-6 flex items-center gap-2">
             <AlertCircle className="h-5 w-5 flex-shrink-0" />
@@ -190,13 +192,14 @@ export default function SignupForm() {
             <Input
               id="email"
               type="email"
+              
               placeholder="your.email@example.com"
-              startContent={<Mail className="h-4 w-4 text-default-500" />}
-              isInvalid={!!errors.email}
-              errorMessage={errors.email?.message}
               {...register("email")}
               className="w-full"
             />
+            {!!errors.email && <span className="flex text-red-400">
+              {errors.email?.message}
+            </span>}
           </div>
 
           <div className="space-y-2">
@@ -206,32 +209,20 @@ export default function SignupForm() {
             >
               Password
             </label>
+            <div className="flex items-center rounded-sm border">
             <Input
               id="password"
               type={showPassword ? "text" : "password"}
               placeholder="••••••••"
-              startContent={<Lock className="h-4 w-4 text-default-500" />}
-              endContent={
-                <Button
-                  isIconOnly
-                  variant="light"
-                  size="sm"
-                  onClick={() => setShowPassword(!showPassword)}
-                  type="button"
-                >
-                  {showPassword ? (
-                    <EyeOff className="h-4 w-4 text-default-500" />
-                  ) : (
-                    <Eye className="h-4 w-4 text-default-500" />
-                  )}
-                </Button>
-              }
-              isInvalid={!!errors.password}
-              errorMessage={errors.password?.message}
               {...register("password")}
-              className="w-full"
+              className="w-full border-none"
             />
-          </div>
+             { showPassword ? <Eye onClick={()=> setShowPassword(false)} className="w-4 h-4 mr-2" /> : <EyeOff onClick={()=> setShowPassword(true)} className="w-4 h-4 mr-2" />}
+            </div>
+            {!!errors.password && <span className="text-red-500">
+              {errors.password.message}
+            </span>}
+            </div>
 
           <div className="space-y-2">
             <label
@@ -240,31 +231,19 @@ export default function SignupForm() {
             >
               Confirm Password
             </label>
+            <div className="flex items-center rounded-sm border">
             <Input
               id="passwordConfirmation"
               type={showConfirmPassword ? "text" : "password"}
               placeholder="••••••••"
-              startContent={<Lock className="h-4 w-4 text-default-500" />}
-              endContent={
-                <Button
-                  isIconOnly
-                  variant="light"
-                  size="sm"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  type="button"
-                >
-                  {showConfirmPassword ? (
-                    <EyeOff className="h-4 w-4 text-default-500" />
-                  ) : (
-                    <Eye className="h-4 w-4 text-default-500" />
-                  )}
-                </Button>
-              }
-              isInvalid={!!errors.passwordConfirmation}
-              errorMessage={errors.passwordConfirmation?.message}
               {...register("passwordConfirmation")}
-              className="w-full"
+              className="w-full border-none"
             />
+            {showConfirmPassword ? <Eye onClick={() => setShowConfirmPassword(false)} className="w-4 h-4 mr-2" /> : <EyeOff onClick={() => setShowConfirmPassword(true)} className="w-4 h-4 mr-2" />}
+            </div>
+            {!!errors.passwordConfirmation && <span className="text-red-400">
+              {errors.passwordConfirmation.message}
+            </span>}
           </div>
 
           <div className="space-y-4">
@@ -281,14 +260,14 @@ export default function SignupForm() {
             type="submit"
             color="primary"
             className="w-full"
-            isLoading={isSubmitting}
+            disabled={isSubmitting}
           >
             {isSubmitting ? "Creating account..." : "Create Account"}
           </Button>
         </form>
-      </CardBody>
+      </CardContent>
 
-      <Divider />
+      <div className="h-4" />
 
       <CardFooter className="flex justify-center py-4">
         <p className="text-sm text-default-600">

@@ -6,10 +6,12 @@ import UploadFileRow from './UploadFileRow'
 
 interface IProps {
     files: UploadedFile[],
-    disableStarAction?: boolean
+  disableStarAction?: boolean,
+  filterFile: (id: string) => void
+  updateFile?: <K extends keyof UploadedFile>(id: string, field: K, value: UploadedFile[K]) => void
 }
 
-const FileTable: FC<IProps> = ({ files, disableStarAction }) => {
+const FileTable: FC<IProps> = ({ files, disableStarAction, filterFile, updateFile }) => {
    
   return (
      <Table>
@@ -19,13 +21,13 @@ const FileTable: FC<IProps> = ({ files, disableStarAction }) => {
               <TableHead>Type</TableHead>
               <TableHead>Size</TableHead>
               <TableHead>
-                <Library className="w-10 h-10"/>
+                <Library className="w-8 h-8"/>
               </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
             {files.length > 0 && files.map((file: UploadedFile) => (
-              <UploadFileRow disableStarAction={disableStarAction} key={file.id} file={file} />
+              <UploadFileRow updateFile={updateFile} filterFile={filterFile} disableStarAction={disableStarAction} key={file.id} file={file} />
             ))}
           </TableBody>
             </Table>

@@ -6,8 +6,6 @@ import { useAuth } from '@clerk/nextjs'
 import { useEffect, useState, useTransition } from 'react'
 import { toast } from 'sonner'
 
-
-
 const Page = () => {
     const { userId } = useAuth()
     const [files, setFiles] = useState<UploadedFile[]>([])
@@ -32,13 +30,17 @@ const Page = () => {
                 toast.error("Failed to fetch")
             }
         })
-    },[])
+    }, [userId])
+    
+    const filterFile = (id:string) => {
+        setFiles([...files.filter(file=> file.id != id)])
+    }
     
   return (
       <Card>
           <CardTitle className='font-bold text-2xl px-4'>Trash</CardTitle>
           <CardContent>
-              <FileTable files={files} disableStarAction={true} />
+              <FileTable filterFile={filterFile} files={files} disableStarAction={true} />
           </CardContent>
     </Card>
   )

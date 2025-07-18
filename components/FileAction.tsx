@@ -9,7 +9,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { EllipsisVertical, Shredder, Star, Trash } from "lucide-react"
+import { ArchiveRestore, EllipsisVertical, Shredder, Star, Trash } from "lucide-react"
 import { UploadedFile } from "@/schemas/file"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
@@ -17,14 +17,14 @@ import { useRouter } from "next/navigation"
 // type Checked = DropdownMenuCheckboxItemProps["checked"]
 interface IProps {
   file: UploadedFile,
-  disableStarAction?: boolean
+  disableStarAction?: boolean,
+  filterFile: (id: string) => void,
+  updateFile?: <K extends keyof UploadedFile>(id: string, field: K, value: UploadedFile[K]) => void
 }
 
-export function FileAction({ file, disableStarAction }: IProps) {
-  console.log(disableStarAction)
+export function FileAction({ file, disableStarAction, filterFile, updateFile }: IProps) {
+  
   const router = useRouter()
-  const [stared, setStared] = React.useState(false);
-  const [trashed, setTrashed] = React.useState(false);
   
   const [isStaredPending, startStaredTransition] = React.useTransition()
   const [isTrashedPending, startTrashedTransition] = React.useTransition()
@@ -39,7 +39,7 @@ export function FileAction({ file, disableStarAction }: IProps) {
 
         if (response.ok) {
           toast.success(`File ${file.name} marked stared`)
-          setStared(!file.isStared);
+          updateFile!(file.id, "isStared", !file.isStared)
           router.refresh()
         }
         
@@ -59,8 +59,9 @@ export function FileAction({ file, disableStarAction }: IProps) {
         })
 
         if (response.ok) {
-          toast.success(`File ${file.name} moved to trash`)
-          setTrashed(!file.isTrash);
+          toast.success(`File ${file.name} ${disableStarAction ? "is restored" : "moved to trash"}`)
+          filterFile(file.id)
+          
         }
         
       } catch (error) {
@@ -81,13 +82,13 @@ export function FileAction({ file, disableStarAction }: IProps) {
         <DropdownMenuItem>
             {!disableStarAction && <Button onClick={handleStared} disabled={isStaredPending} variant="outline">
                       <Star className={`w-10 h-10 ${file.isStared ? "text-blue-700": "text-gray-700"}`} />
-                      <span className={`${file.isStared || stared ? "text-blue-500" : "text-gray-500"} font-medium`}>Star</span>
+                      <span className={`${file.isStared? "text-blue-500" : "text-gray-500"} font-medium`}>Star</span>
             </Button>}
         </DropdownMenuItem>
         <DropdownMenuItem>
             <Button disabled={isTrashedPending} onClick={handleTrash} variant="outline">
-                      <Trash className={`w-10 h-10 ${file.isTrash ? "text-blue-700": "text-gray-700"}`} />
-                      <span className={`${file.isTrash || trashed? "text-blue-500": "text-gray-500"} font-medium`}>Move in trash</span>
+                      {disableStarAction ? <ArchiveRestore className="w-10 h-10" /> :<Trash className={`w-10 h-10 ${file.isTrash ? "text-blue-700": "text-gray-700"}`} />}
+                      <span className={`text-gray-500 font-medium`}>{disableStarAction ?"Restore" :"Move in trash"}</span>
             </Button>
         </DropdownMenuItem>
         <DropdownMenuItem>

@@ -5,10 +5,12 @@ import { FileAction } from './FileAction'
 
 interface IProps {
   file: UploadedFile,
-  disableStarAction?: boolean
+  disableStarAction?: boolean,
+  filterFile: (id: string) => void
+  updateFile?: <K extends keyof UploadedFile>(id: string, field: K, value: UploadedFile[K]) => void
 }
 
-const UploadFileRow: FC<IProps> = ({ file, disableStarAction }) => {
+const UploadFileRow: FC<IProps> = ({ file, disableStarAction, filterFile, updateFile}) => {
   
      const extractType = (filename: string) => {
     return filename.split(".")[1]
@@ -35,7 +37,7 @@ const UploadFileRow: FC<IProps> = ({ file, disableStarAction }) => {
         <TableCell>{validateSize(file.size)}</TableCell>
         {/* <TableCell className="text-right">{file.fileUrl}</TableCell> */}
           <TableCell>
-              <FileAction disableStarAction={disableStarAction} file={file} />
+              <FileAction updateFile={updateFile} filterFile={filterFile} disableStarAction={disableStarAction} file={file} />
         </TableCell>
     </TableRow>
   )

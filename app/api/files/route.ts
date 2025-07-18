@@ -27,6 +27,7 @@ export async function GET(request: NextRequest) {
                 .where(and(
                     eq(files.userId, userId),
                     eq(files.parent, parentId),
+                    eq(files.isTrash, false)
                 ))
         } else {
             userFiles = await db
@@ -34,7 +35,8 @@ export async function GET(request: NextRequest) {
                 .from(files)
                 .where(and(
                     eq(files.userId, userId),
-                    isNull(files.parent)
+                    isNull(files.parent),
+                    eq(files.isTrash, false)
                 ))
         }
 

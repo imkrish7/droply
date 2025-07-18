@@ -27,11 +27,20 @@ export function UploadedFiles() {
       
     })
   }, [userId])
- 
+  
+   const filterFile = (id:string) => {
+        setFiles([...files.filter(file=> file.id != id)])
+  }
+  const updateFile = <K extends keyof UploadedFile>(id: string, field: K , value: UploadedFile[K]) => {
+    const file: UploadedFile = files.filter(file => file.id === id)[0];
+    file[field] = value
+    setFiles([...files.filter(_file=> _file.id != id), file])
+  }
+
   return (
     <Card>
       <CardContent>
-        <FileTable files={files} />
+        <FileTable updateFile={updateFile} filterFile={filterFile} files={files} />
       </CardContent>
     </Card>
   )

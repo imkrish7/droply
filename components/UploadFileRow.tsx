@@ -2,6 +2,7 @@ import { UploadedFile } from '@/schemas/file'
 import React, { FC } from 'react'
 import { TableCell, TableRow } from './ui/table'
 import { FileAction } from './FileAction'
+import { Button } from './ui/button'
 
 interface IProps {
   file: UploadedFile,
@@ -35,7 +36,7 @@ const UploadFileRow: FC<IProps> = ({ file, disableStarAction, filterFile, update
         <TableCell className="font-medium">{file.name}</TableCell>
         <TableCell className="uppercase">{extractType(file.name)}</TableCell>
         <TableCell>{validateSize(file.size)}</TableCell>
-        {/* <TableCell className="text-right">{file.fileUrl}</TableCell> */}
+        <TableCell><Button>View</Button></TableCell>
           <TableCell>
               <FileAction updateFile={updateFile} filterFile={filterFile} disableStarAction={disableStarAction} file={file} />
         </TableCell>

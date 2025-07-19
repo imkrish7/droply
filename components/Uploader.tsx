@@ -6,9 +6,10 @@ import { useAuth } from '@clerk/nextjs'
 import { toast } from 'sonner'
 import { useRouter } from 'next/navigation'
 
-const Uploader = () => {
-    const router = useRouter()
+
+const Uploader= () => {
     const { userId } = useAuth();
+    const router = useRouter()
     const [isPending, startTransition] = useTransition();
     const inputRef = useRef<HTMLInputElement | null>(null)
     const handleClick = (event: ChangeEvent<HTMLInputElement>) => {
@@ -21,7 +22,8 @@ const Uploader = () => {
                 try {
                      const response = await fetch("/api/files/upload", {
                         method: "POST",
-                        body: formData
+                         body: formData,
+                        cache: 'no-store'
                      })
                     
                     if (response.ok) {
@@ -29,7 +31,7 @@ const Uploader = () => {
                         if (inputRef.current) {
                             inputRef.current.value = ""
                         }
-                        router.refresh()
+                        
                     } else {
                         toast.error("Failed to upload file!")
                     }
@@ -37,6 +39,8 @@ const Uploader = () => {
                 } catch (error) {
                     console.log(error)
                     toast.error("Upload Failed!")
+                } finally {
+                    router.refresh()
                 }
                
             })

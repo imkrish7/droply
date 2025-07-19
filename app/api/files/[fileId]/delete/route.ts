@@ -39,16 +39,13 @@ export async function DELETE(request: NextRequest, prop: {params: Promise<{fileI
         }
         
         
-        const deleteFromImagekit = await imagekit.deleteFile(file.imagekitId);
+        await imagekit.deleteFile(file.imagekitId);
 
-        console.log("imagekit response", deleteFromImagekit, "\n");
         
-        const deleteFromDbFile = await db.delete(files).where(and(
+        await db.delete(files).where(and(
             eq(files.userId, userId),
             eq(files.id, fileId)
         ));
-
-        console.log(deleteFromDbFile, "dbResponse")
 
         return NextResponse.json({success: true, message: "A file has been deleted" })
 

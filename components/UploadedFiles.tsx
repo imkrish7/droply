@@ -1,5 +1,4 @@
 "use client"
-
 import { Card, CardContent } from "./ui/card"
 import { useEffect, useState, useTransition } from "react"
 import { toast } from "sonner"
@@ -7,8 +6,11 @@ import { useAuth } from "@clerk/nextjs"
 import { UploadedFile } from "@/schemas/file"
 import FileTable from "./FileTable"
 
+interface IProps {
+  updatedAt: string
+}
 
-export function UploadedFiles() {
+export function UploadedFiles({updatedAt}: IProps) {
   const {userId} = useAuth()
   const [, startTransition] = useTransition()
   const [files, setFiles] = useState<UploadedFile[]>([])
@@ -16,7 +18,9 @@ export function UploadedFiles() {
     startTransition(async () => {
       try {
         if (userId) {
-          const respone = await fetch("/api/files?" + new URLSearchParams({ userId: userId! }))
+          const respone = await fetch("/api/files?" + new URLSearchParams({ userId: userId! }), {
+            cache: 'no-store'
+          })
           const data = await respone.json()
           setFiles(data.files)
         }
@@ -24,11 +28,10 @@ export function UploadedFiles() {
         console.error(error)
         toast.error("Files fetching failed")
       }
-      
     })
-  }, [userId])
+  }, [userId, updatedAt])
   
-   const filterFile = (id:string) => {
+  const filterFile = (id:string) => {
         setFiles([...files.filter(file=> file.id != id)])
   }
   const updateFile = <K extends keyof UploadedFile>(id: string, field: K , value: UploadedFile[K]) => {

@@ -69,8 +69,6 @@ export async function POST(request: NextRequest) {
             useUniqueFileName: true
         })
 
-        console.log(uploadFile)
-
         const fileData = {
             name: originalName,
             path: uploadFile.filePath,

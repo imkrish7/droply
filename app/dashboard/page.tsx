@@ -1,15 +1,17 @@
+"use server"
 import { UploadedFiles } from '@/components/UploadedFiles'
 import Uploader from '@/components/Uploader'
 import React from 'react'
 
 const Dashboard = () => {
+  
   return (
     <div className='flex flex-col px-2 gap-10'>
       <section className='h-50'>
-        <Uploader />
+        <Uploader/>
       </section>
       <section className='flex-grow'>
-        <UploadedFiles />
+        <UploadedFiles updatedAt={ new Date().toISOString() } />
       </section>
     </div>
   )

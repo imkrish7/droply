@@ -20,6 +20,7 @@ const FileTable: FC<IProps> = ({ files, disableStarAction, filterFile, updateFil
               <TableHead>Name</TableHead>
               <TableHead>Type</TableHead>
               <TableHead>Size</TableHead>
+              <TableHead>View</TableHead>
               <TableHead>
                 <Library className="w-8 h-8"/>
               </TableHead>

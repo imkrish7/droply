@@ -1,0 +1,1 @@
+ALTER TABLE "files" ADD COLUMN "image_kit" text NOT NULL;

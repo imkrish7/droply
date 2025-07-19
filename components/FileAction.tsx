@@ -13,6 +13,7 @@ import { ArchiveRestore, EllipsisVertical, Shredder, Star, Trash } from "lucide-
 import { UploadedFile } from "@/schemas/file"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
+import { DeleteBanner } from "./DeleteBanner"
 
 // type Checked = DropdownMenuCheckboxItemProps["checked"]
 interface IProps {
@@ -23,7 +24,7 @@ interface IProps {
 }
 
 export function FileAction({ file, disableStarAction, filterFile, updateFile }: IProps) {
-  
+  const [deleteOpen, setDeleteOpen] = React.useState<boolean>(false);
   const router = useRouter()
   
   const [isStaredPending, startStaredTransition] = React.useTransition()
@@ -71,7 +72,31 @@ export function FileAction({ file, disableStarAction, filterFile, updateFile }: 
     })
   }
 
+  const handleDelete = () => {
+      startTrashedTransition(async () => {
+      try {
+
+        const response = await fetch(`/api/files/${file.id}/delete`, {
+          method: "Delete"
+        })
+
+        if (response.ok) {
+          toast.success(`File ${file.name} deleted permanently`)
+          filterFile(file.id)
+        }
+        
+      } catch (error) {
+          console.error(error)
+          toast.error("Something went wrong")
+      } finally {
+        setDeleteOpen(false)
+      }
+    })
+  }
+
   return (
+    <>
+    {deleteOpen && <DeleteBanner handleDelete={handleDelete} open={deleteOpen} setOpen={setDeleteOpen} />}
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="outline">
@@ -92,12 +117,13 @@ export function FileAction({ file, disableStarAction, filterFile, updateFile }: 
             </Button>
         </DropdownMenuItem>
         <DropdownMenuItem>
-            <Button variant="outline">
+            <Button onClick={()=> setDeleteOpen(true)} variant="outline">
                       <Shredder className="w-10 h-10" />
                       <span className="text-gray-500 font-medium">Delete</span>
             </Button>
         </DropdownMenuItem>
       </DropdownMenuContent>
-    </DropdownMenu>
+      </DropdownMenu>
+      </>
   )
 }

@@ -69,11 +69,14 @@ export async function POST(request: NextRequest) {
             useUniqueFileName: true
         })
 
+        console.log(uploadFile)
+
         const fileData = {
             name: originalName,
             path: uploadFile.filePath,
             size: file.size,
             type: file.type,
+            imagekitId: uploadFile.fileId,
             fileUrl: uploadFile.url,
             thumbnailUrl: uploadFile.thumbnailUrl || null,
             userId: userId,
